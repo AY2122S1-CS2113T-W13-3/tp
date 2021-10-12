@@ -7,6 +7,7 @@ import seedu.duke.task.type.Lesson;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,5 +32,13 @@ class NusModsParserTest {
         assertThrows(IOException.class,
             () -> parser.getLessonEvents(new Lesson("CS2113T", "C02")));
         System.clearProperty("https.proxyHost"); // simulate network down
+    }
+
+    @Test
+    void getLessonEvents_AY2021_ST1() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(0);
+        cal.set(2021, Calendar.AUGUST, 9, 0, 0, 0);
+        assertEquals(cal.get(Calendar.WEEK_OF_YEAR), Semester.S1.getStartWeek());
     }
 }

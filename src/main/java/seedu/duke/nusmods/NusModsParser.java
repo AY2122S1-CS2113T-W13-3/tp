@@ -27,19 +27,11 @@ public class NusModsParser {
     private static final String ENDPOINT = "https://api.nusmods.com/v2/";
     private static final int TIMEOUT = 5000;
 
-    private enum Semester {
-        S1, S2, ST1, ST2;
-
-        public static Semester fromInt(int n) {
-            // n is 1-based, as in NUSMods data
-            return Semester.values()[n - 1];
-        }
-    }
-
     private static Semester getSemester() {
         // FIXME
         return Semester.S1;
     }
+
 
     /**
      * Get calendar events of the given lesson in the current semester.
