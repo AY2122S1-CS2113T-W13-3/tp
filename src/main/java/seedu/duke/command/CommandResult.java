@@ -7,7 +7,7 @@ import seedu.duke.task.taskmanager.TaskManager;
  */
 public class CommandResult {
 
-    private static final String MESSAGE_NOT_NULL_ASSERTION = "Command Result message cannot be null!";
+    private static final String MESSAGE_NOT_NULL_ASSERTION = "RegisterCommand Result message cannot be null!";
 
     private boolean isModified;
     private boolean isExited;

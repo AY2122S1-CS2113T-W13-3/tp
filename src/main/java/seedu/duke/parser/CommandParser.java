@@ -1,22 +1,17 @@
 package seedu.duke.parser;
 
+import org.reflections.Reflections;
 import seedu.duke.command.Command;
-import seedu.duke.command.ByeCommand;
-import seedu.duke.command.CommandEnum;
-import seedu.duke.command.DeleteCommand;
-import seedu.duke.command.EditCommand;
-import seedu.duke.command.HelpCommand;
 import seedu.duke.command.InvalidCommand;
-import seedu.duke.command.ListCommand;
-import seedu.duke.command.SortCommand;
-import seedu.duke.command.addtask.DeadlineCommand;
-import seedu.duke.command.addtask.EventCommand;
-import seedu.duke.command.addtask.ModuleCommand;
-import seedu.duke.command.addtask.TodoCommand;
+import seedu.duke.command.annotation.RegisterCommand;
 import seedu.duke.log.Log;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 import seedu.duke.task.taskmanager.TaskManager;
 import seedu.duke.utility.Utility;
 
@@ -26,33 +21,36 @@ public class CommandParser {
     private static final String FLAG_REGEX = "^--\\w+";
     private static final String WHITESPACE_REGEX = "\\s+";
     private static final String INVALID_TASK_INDEX = "%s is not an integer!";
+    private static final Set<Class<?>> commandClasses
+            = new Reflections("seedu.duke.command")
+            .getTypesAnnotatedWith(RegisterCommand.class);
 
     //@@author APZH
     public static Map<String, String> getCommandOptions(String commandArguments) {
 
         Map<String, String> flagsToArguments = new HashMap<>();
         String[] tokens = commandArguments.split(WHITESPACE_REGEX);
-        String mainArgument = "";
+        StringBuilder mainArgument = new StringBuilder();
 
         for (int i = 0; i < tokens.length; i++) {
             if (tokens[i].matches(FLAG_REGEX)) {
                 String flag = tokens[i];
-                String flagArguments = "";
+                StringBuilder flagArguments = new StringBuilder();
                 try {
-                    while (tokens[i + 1].matches(FLAG_REGEX) == false) {
-                        flagArguments += tokens[i + 1] + " ";
+                    while (!tokens[i + 1].matches(FLAG_REGEX)) {
+                        flagArguments.append(tokens[i + 1]).append(" ");
                         i++;
                     }
                 } catch (IndexOutOfBoundsException e) {
                     Log.warning(e.getMessage());
                 }
-                flagsToArguments.put(flag.substring(2), flagArguments.trim());
+                flagsToArguments.put(flag.substring(2), flagArguments.toString().trim());
             } else {
-                mainArgument += tokens[i] + " ";
+                mainArgument.append(tokens[i]).append(" ");
             }
         }
 
-        flagsToArguments.put(Command.MAIN_ARGUMENT, mainArgument.trim());
+        flagsToArguments.put(Command.MAIN_ARGUMENT, mainArgument.toString().trim());
         return flagsToArguments;
     }
 
@@ -61,51 +59,41 @@ public class CommandParser {
 
         String[] inputArguments = userInput.split("\\s+", 2);
         String command = inputArguments[0];
-        CommandEnum commandEnum = CommandEnum.getCommand(command);
         Map<String, String> commandOptions = new HashMap<>();
 
         if (inputArguments.length == 2) {
             commandOptions = getCommandOptions(inputArguments[1]);
         }
-        switch (commandEnum) {
-        case BYE:
-            return new ByeCommand();
-        case HELP:
-            return new HelpCommand();
-        case TODO:
-            return new TodoCommand(taskManager, commandOptions);
-        case DEADLINE:
-            return new DeadlineCommand(taskManager, commandOptions);
-        case EVENT:
-            return new EventCommand(taskManager, commandOptions);
-        case LIST:
-            return new ListCommand(taskManager, commandOptions);
-        case DELETE:
-            return new DeleteCommand(taskManager, commandOptions);
-        case SORT:
-            return new SortCommand(taskManager, commandOptions);
-        case MODULE:
-            return new ModuleCommand(taskManager, commandOptions);
-        case EDIT:
-            return new EditCommand(taskManager, commandOptions);
-        default:
-            return new InvalidCommand();
+        for (Class<?> commandClass : commandClasses) {
+            assert Command.class.isAssignableFrom(commandClass);
+            // can only be programmer mistake if false
+            try {
+                if (command.equals(commandClass.getField("COMMAND_NAME").get(null))) {
+                    return (Command) commandClass.getConstructor(taskManager.getClass(), Map.class)
+                            .newInstance(taskManager, commandOptions);
+                }
+            } catch (NoSuchFieldException | NoSuchMethodException
+                    | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                System.out.println(commandClass);
+                System.out.println(Arrays.toString(e.getStackTrace()));
+            }
         }
+        return new InvalidCommand(null, null);
     }
 
     //@@author APZH
     // Used to debug and check the whether the user command mapping of flag->value works
     public static String printCommandOptions(Map<String, String> commandOptions) {
 
-        String flagsToArguments = "";
+        StringBuilder flagsToArguments = new StringBuilder();
 
         for (String flag : commandOptions.keySet()) {
-            flagsToArguments += flag + " = " + commandOptions.get(flag) + "\n";
+            flagsToArguments.append(flag).append(" = ").append(commandOptions.get(flag)).append("\n");
         }
 
         System.out.println(flagsToArguments);
 
-        return flagsToArguments;
+        return flagsToArguments.toString();
     }
 
     //@@author SeanRobertDH

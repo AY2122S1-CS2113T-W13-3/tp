@@ -2,6 +2,8 @@ package seedu.duke.command;
 
 import java.util.Map;
 import java.util.TreeSet;
+
+import seedu.duke.command.annotation.RegisterCommand;
 import seedu.duke.exception.EmptyTasklistException;
 import seedu.duke.exception.InvalidTaskIndexException;
 import seedu.duke.local.DataManager;
@@ -10,7 +12,10 @@ import seedu.duke.task.Task;
 import seedu.duke.task.taskmanager.TaskManager;
 
 //@@author SeanRobertDH
+@RegisterCommand
 public class DeleteCommand extends Command {
+
+    public static final String COMMAND_NAME = "delete";
 
     private static final String TASK_DELETED = "Tasks deleted:\n";
     private static final String USAGE = "delete <index>";
@@ -78,15 +83,15 @@ public class DeleteCommand extends Command {
     }
 
     private String deleteTasks(TreeSet<Integer> indexes) throws InvalidTaskIndexException {
-        String message = "";
+        StringBuilder message = new StringBuilder();
         int offset = 0;
         taskManager.checkFilteredListIndexValid(indexes.first() - 1);
         taskManager.checkFilteredListIndexValid(indexes.last() - 1);
         for (Integer index : indexes) {
             Task deletedTask = taskManager.deleteFilteredTask(index - 1 - offset++);
             DataManager.deleteTask(index - 1 - offset);
-            message += deletedTask.getTaskEntryDescription() + '\n';
+            message.append(deletedTask.getTaskEntryDescription()).append('\n');
         }
-        return message;
+        return message.toString();
     }
 }

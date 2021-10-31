@@ -11,6 +11,7 @@ import seedu.duke.task.Task;
 import seedu.duke.task.taskmanager.TaskManager;
 
 public class EditCommand extends Command {
+    public static final String COMMAND_NAME = "edit";
     private static final String TASK_EDITED = "Tasks edited:\n";
     private static final String USAGE = "edit <index> --<flag> <value>";
 

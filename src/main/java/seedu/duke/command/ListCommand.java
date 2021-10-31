@@ -2,6 +2,7 @@ package seedu.duke.command;
 
 import java.util.Map;
 
+import seedu.duke.command.annotation.RegisterCommand;
 import seedu.duke.exception.EmptyTasklistException;
 import seedu.duke.exception.InvalidPriorityException;
 import seedu.duke.exception.InvalidRecurrenceException;
@@ -13,8 +14,10 @@ import seedu.duke.exception.TaskIsNonRecurringException;
 import seedu.duke.task.taskmanager.TaskManager;
 
 //@@author APZH
+@RegisterCommand
 public class ListCommand extends Command {
 
+    public static final String COMMAND_NAME = "list";
     private static final String USAGE = "list";
 
     public ListCommand(TaskManager taskManager, Map<String, String> commandArguments) {

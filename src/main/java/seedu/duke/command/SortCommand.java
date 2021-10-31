@@ -1,5 +1,6 @@
 package seedu.duke.command;
 
+import seedu.duke.command.annotation.RegisterCommand;
 import seedu.duke.exception.EmptySortCriteriaException;
 import seedu.duke.exception.EmptyTasklistException;
 import seedu.duke.task.taskmanager.TaskManager;
@@ -7,7 +8,9 @@ import seedu.duke.task.taskmanager.TaskManager;
 import java.util.Map;
 
 //@@author APZH
+@RegisterCommand
 public class SortCommand extends Command {
+    public static final String COMMAND_NAME = "sort";
 
     private static final String USAGE = "sort";
 
@@ -18,7 +21,7 @@ public class SortCommand extends Command {
     //@@author APZH
     @Override
     public CommandResult executeCommand() throws Exception {
-        String message = "";
+        String message;
 
         try {
             message = taskManager.sortTasklist(commandArguments);

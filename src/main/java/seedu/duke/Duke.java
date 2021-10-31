@@ -1,7 +1,7 @@
 package seedu.duke;
 
+import seedu.duke.command.ByeCommand;
 import seedu.duke.command.Command;
-import seedu.duke.command.CommandEnum;
 import seedu.duke.command.CommandResult;
 import seedu.duke.parser.CommandParser;
 import seedu.duke.storage.FileCreater;
@@ -28,14 +28,13 @@ public class Duke {
     public String readInput() {
         ui.printCursor();
         if (!in.hasNextLine()) {
-            return CommandEnum.BYE.toString();
+            return ByeCommand.COMMAND_NAME;
         }
-        String input = in.nextLine();
-        return input;
+        return in.nextLine();
     }
 
     public CommandResult runCommand(Command userCommand) {
-        CommandResult commandResult = null;
+        CommandResult commandResult;
         try {
             commandResult = userCommand.executeCommand();
         } catch (Exception e) {
@@ -53,7 +52,7 @@ public class Duke {
         ui.printLogo();
 
         Command userCommand;
-        CommandResult commandResult = null;
+        CommandResult commandResult;
 
         FileCreater.createAll();
 
@@ -67,7 +66,7 @@ public class Duke {
 
             ui.printMessage(commandResult.getMessage());
 
-        } while (commandResult.getIsExited() != true);
+        } while (!commandResult.getIsExited());
 
     }
 

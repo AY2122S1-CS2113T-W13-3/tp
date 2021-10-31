@@ -1,6 +1,5 @@
 package seedu.duke.command;
 
-import java.util.HashMap;
 import java.util.Map;
 import seedu.duke.task.taskmanager.TaskManager;
 
@@ -14,16 +13,6 @@ public abstract class Command {
 
     protected final TaskManager taskManager;
     protected final Map<String, String> commandArguments;
-
-    public Command() {
-        this.taskManager = null;
-        this.commandArguments = null;
-    }
-
-    public Command(TaskManager taskManager) {
-        this.taskManager = taskManager;
-        this.commandArguments = null;
-    }
 
     public Command(TaskManager taskManager, Map<String, String> commandArguments) {
         this.taskManager = taskManager;
