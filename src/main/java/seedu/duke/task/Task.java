@@ -27,8 +27,7 @@ public abstract class Task {
     private String description;
     private PriorityEnum priority;
     private RecurrenceEnum recurrence;
-
-    protected Reminder reminder;
+    private Reminder reminder;
 
     protected Task(String description) {
         setDescription(description);
@@ -75,15 +74,33 @@ public abstract class Task {
         this.priority = priority;
     }
 
-    public abstract boolean needReminder();
+    public Reminder getReminder() {
+        return reminder;
+    }
 
-    public abstract String getReminder(LocalDateTime now);
+    public String getReminder(LocalDateTime now) {
+        return reminder.getRecurrenceMessage(now, getTaskEntryDescription(), getRecurrence());
+    }
 
-    public abstract void updateReminderMessage(String message);
+    public void setReminder(Reminder reminder) {
+        this.reminder = reminder;
+    }
 
-    public abstract void updateReminderTime(long reminderTime);
+    public boolean needReminder() {
+        return (reminder != null);
+    }
 
-    public abstract ReminderInformation getReminderInformation();
+    public void updateReminderMessage(String message) {
+        reminder.setMessage(message);
+    }
+
+    public void updateReminderTime(long reminderTime) {
+        reminder.setUserTime(reminderTime);
+    }
+
+    public ReminderInformation getReminderInformation() {
+        return reminder.getInformation();
+    }
 
     public RecurrenceEnum getRecurrence() {
         return this.recurrence;
@@ -97,7 +114,7 @@ public abstract class Task {
     public abstract TypeEnum getTaskType();
 
     public void edit(Map<String, String> arguments) throws InvalidPriorityException,
-            InvalidRecurrenceException, ParseDateFailedException, StartDateAfterEndDateException {
+        InvalidRecurrenceException, ParseDateFailedException, StartDateAfterEndDateException {
         if (arguments.containsKey(EditFlag.DESCRIPTION)) {
             setDescription(arguments.get(EditFlag.DESCRIPTION));
         }
@@ -114,4 +131,8 @@ public abstract class Task {
 
     protected abstract void taskEdit(Map<String, String> arguments)
         throws ParseDateFailedException, StartDateAfterEndDateException;
+
+    public abstract void refreshDate();
+
+    public abstract LocalDateTime getListDate();
 }

@@ -20,7 +20,7 @@ public class ReminderCommand extends Command {
 
     @Override
     protected String getUsage() {
-        return null;
+        return USAGE;
     }
 
     @Override

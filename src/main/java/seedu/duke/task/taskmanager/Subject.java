@@ -5,20 +5,20 @@ import java.util.List;
 
 //@@author SeanRobertDH
 interface Subject {
-    ArrayList<TaskManagerObserver> observers = new ArrayList<>();
+    ArrayList<Observer> observers = new ArrayList<>();
 
-    default void addObserver(TaskManagerObserver observer) {
+    default void addObserver(Observer observer) {
         observers.add(observer);
     }
 
-    default List<TaskManagerObserver> getObservers() {
+    default List<Observer> getObservers() {
         return observers;
     }
 
 
-    default void updateObservers(TaskManager taskManager) {
-        for (TaskManagerObserver observer : observers) {
-            observer.update(taskManager);
+    default void updateObservers() {
+        for (Observer observer : observers) {
+            observer.update();
         }
     }
 }

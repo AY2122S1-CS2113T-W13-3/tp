@@ -11,7 +11,6 @@ import seedu.duke.task.RecurrenceEnum;
 import seedu.duke.task.Task;
 import seedu.duke.task.TypeEnum;
 import seedu.duke.task.reminder.Reminder;
-import seedu.duke.task.reminder.ReminderInformation;
 
 public class Deadline extends Task {
 
@@ -33,7 +32,7 @@ public class Deadline extends Task {
         this(description, dueDate);
         setPriority(priority);
     }
-    
+
     public Deadline(String description, LocalDateTime dueDate, RecurrenceEnum recurrence) {
         this(description, dueDate);
         setRecurrence(recurrence);
@@ -56,36 +55,13 @@ public class Deadline extends Task {
     public void setDueDate(LocalDateTime dueDate) {
         assert dueDate != null : DUE_DATE_NOT_NULL_ASSERTION;
         this.dueDate = dueDate;
-        reminder = new Reminder(dueDate);
-    }
-
-    @Override
-    public boolean needReminder() {
-        return (reminder != null);
-    }
-    
-    public String getReminder(LocalDateTime now) {
-        return reminder.getRecurrenceMessage(now, getTaskEntryDescription(), getRecurrence());
-    }
-
-    @Override
-    public void updateReminderMessage(String message) {
-        reminder.setMessage(message);
-    }
-
-    @Override
-    public void updateReminderTime(long reminderTime) {
-        reminder.setUserTime(reminderTime);
-    }
-
-    public ReminderInformation getReminderInformation() {
-        return reminder.getInformation();
+        setReminder(new Reminder(dueDate));
     }
 
     @Override
     public String getTaskEntryDescription() {
         return DEADLINE_ICON + " " + super.getTaskEntryDescription()
-                + String.format(DEADLINE_DATE_DESCRIPTION_REGEX, DateParser.dateToString(getDueDate()));
+            + String.format(DEADLINE_DATE_DESCRIPTION_REGEX, DateParser.dateToString(getDueDate()));
     }
 
     @Override
@@ -94,5 +70,16 @@ public class Deadline extends Task {
             String due = arguments.get(DeadlineFlag.DUE_DATE);
             setDueDate(DateParser.stringToDate(due));
         }
+    }
+
+    @Override
+    public void refreshDate() {
+        LocalDateTime newDueDate = getRecurrence().getNextRecurredDate(getDueDate());
+        setDueDate(newDueDate);
+    }
+
+    @Override
+    public LocalDateTime getListDate() {
+        return getDueDate();
     }
 }

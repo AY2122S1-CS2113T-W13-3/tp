@@ -1,7 +1,6 @@
 package seedu.duke.task.type;
 
-import seedu.duke.nusmods.NusModsParser;
-import seedu.duke.task.Task;
+import seedu.duke.parser.DateParser;
 import seedu.duke.task.TypeEnum;
 import seedu.duke.task.reminder.ReminderInformation;
 import seedu.duke.nusmods.Semester;
@@ -9,17 +8,22 @@ import seedu.duke.task.RecurrenceEnum;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.Arrays;
 
 /**
  * A single lesson class e.g. CS2101 C02 Thursday
  */
 public class Lesson extends Event {
 
+    private static final String LESSON_ICON = "[L]";
+    private static final TypeEnum TASK_TYPE = TypeEnum.LESSON;
     private int[] occurrences;
 
     public String getModuleCode() {
         return moduleCode;
+    }
+
+    public TypeEnum getTaskType() {
+        return this.TASK_TYPE;
     }
 
     public void setModuleCode(String moduleCode) {
@@ -49,6 +53,13 @@ public class Lesson extends Event {
 
     public void setOccurrences(int[] occurrences) {
         this.occurrences = occurrences;
+    }
+
+    @Override
+    public String getTaskEntryDescription() {
+        return LESSON_ICON + " " + this.getModuleCode() + ' ' + this.getClassNo() + ": "
+                + DateParser.dateToString(getStartDate())
+                + " to " + DateParser.dateToString(getEndDate());
     }
 
     @Override

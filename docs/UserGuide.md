@@ -14,6 +14,7 @@ Below is a guide on how you can get started using our program to start Sched'ing
         - [2.2.1 Todo: `todo`](#221-todo-todo)
         - [2.2.2 Deadline: `deadline`](#222-deadline-deadline)
         - [2.2.3 Event: `event`](#223-event-event)
+        - [2.2.4 Date Format: `<dateFormat>`](#224-date-format-dateformat)
     - [2.3 Listing your tasks: `list`](#23-listing-all-your-tasks-list)
     - [2.4 Sorting your task list: `sort`](#24-sorting-your-task-list-sort)
     - [2.5 Deleting your tasks: `delete`](#25-deleting-your-tasks-delete)
@@ -68,7 +69,7 @@ Adds your **todo** task to your task list.
 **Format:** `todo <description> [--flag <argument>]`
 - `<description>` specifies the description of your todo.
 - `[--flag <argument>]` specifies additional details of your todo.
-  - When your task is to be done: `[--doOn dd-MM-yyyy hh:mm]`
+  - When your task is to be done: `[--doOn `[`<dateFormat>`](#224-date-format-dateformat)`]`
   - The priority of your task: `[--priority high|medium|low]`
   - How often your task is to repeat: `[--recur daily|weekly|monthly|yearly]`
 
@@ -93,7 +94,7 @@ Adds your **deadline** task to your task list.
 
 **Format:** `deadline <description> <--due dd-MM-yyyy hh:mm> [--flag <argument>]`
 - `<description>` specifies the description of your deadline.
-- `<--due dd-MM-yyyy hh:mm>` is a mandatory flag.
+- `<--due `[`<dateFormat>`](#224-date-format-dateformat)`>` is a mandatory flag.
 - `[--flag <argument>]` specifies additional details of your deadline.
   - The priority of your task: `[--priority high|medium|low]`
   - How often your task is to repeat: `[--recur daily|weekly|monthly|yearly]`
@@ -119,7 +120,7 @@ Adds your **event** task to your task list.
 
 **Format:** `event <description> <--start dd-MM-yyyy hh:mm> <--end dd-MM-yyyy hh:mm> [--flag <argument>]`
 - `<description>` specifies the description of your event.
-- `<--start dd-MM-yyyy hh:mm>` and `<--end dd-MM-yyyy hh:mm>` are mandatory flags.
+- `<--start `[`<dateFormat>`](#224-date-format-dateformat)`>` and `<--end `[`<dateFormat>`](#224-date-format-dateformat)`>` are mandatory flags.
 - `[--flag <argument>]` specifies additional details of your event.
   - The priority of your event: `[--priority high|medium|low]`
   - How often your event is to repeat: `[--recur daily|weekly|monthly|yearly]`
@@ -130,20 +131,33 @@ Adds your **event** task to your task list.
 - Specifies the task to start on `25-12-2020 22:00:00` and end on `26-12-2020 04:00:00`.
 - with no recurrence.
 
-**Expected Outcome:**
+### 2.2.4 Date Format: `<dateFormat>`
+The acepted date formats in our program:  
+- `dd/MM/yyyy HH:mm`
+- `dd/MM/yyyy HH`
+- `dd/MM HH:mm`
+- `dd/MM HH`
+- `dd HH:mm`
+- `dd HH`
+- `HH`  
 
-```
--------------------------------------------------------------------------
-[user]: event Marquee Christmas Party --priority high --start 25-12-2020 22:00:00 --end 26-12-2020 04:00:00
-|| Task created!
-|| Marquee Christmas Party [high] (startDate: 25-12-2020 10:00:00 - endDate: 26-12-2020 04:00:00)
--------------------------------------------------------------------------
-```
+**Legend:**
+- `dd` is day of month.
+- `MM` is month of year.
+- `yyyy` is the year.
+- `HH` is hour on 24-hour clock
+- `mm` is the minute
+
+>💡 **Note**: When `dd`, `mm` or `yyyy` is unspecified, they will be replaced with current day, month and year respectively.  
+>💡 **Note**: When `mm` is unspecified, it will be replaced with `0`.
+
+**Example:** `03/10/2004 03` translates to `3rd October 2004, 3am`.
+
 
 ### 2.3 Listing all your tasks: `list`
 Lists tasks in your task list.
 
-**Format:** `list [--filter <argument>]`
+**Format 1:** `list [--filter <argument>]`
 - `[--flag <argument>]` specifies the filter to be applied to your task list.
   - Type of task: `[--type todo|deadline|event]`
   - Priority of the task: `[--priority high|medium|low]`
@@ -181,6 +195,29 @@ Lists tasks in your task list.
 ||  MY TASKLIST
 || -------------
 || 1. read book [low] (doOn: 20-10-2021 02:00:00)
+-------------------------------------------------------------------------
+```
+
+**Format 2:** `list [task id]`
+- `[task id]` specifies the id of the task to display the recurrence.
+
+**Example (with task id):** `list 1`
+- List the next 4 recurrences for task with task id `1`.
+
+**Expected Outcome:**
+
+```
+-------------------------------------------------------------------------
+[user]: list 1
+|| -------------
+||  MY TASKLIST
+|| -------------
+|| Listing next 4 recurrences for:
+|| [T] read book <low> {daily} (doOn: 30-10-2021 02:00)
+|| -> 31-10-2021 02:00
+|| -> 01-11-2021 02:00
+|| -> 02-11-2021 02:00
+|| -> 03-11-2021 02:00
 -------------------------------------------------------------------------
 ```
 

@@ -4,6 +4,7 @@
 /*.iml
 log.txt
 cache/
+data/
 
 # Gradle build files
 /.gradle/

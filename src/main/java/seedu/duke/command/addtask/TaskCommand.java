@@ -35,7 +35,6 @@ public abstract class TaskCommand extends Command {
             TaskFactory taskFactory = setTaskFactory();
             Task task = taskFactory.getTask();
             taskManager.addTask(task);
-            DataManager.addTaskLine(TasktoLineConverter.convertTaskToLine(task));
             message = String.format(TASK_CREATED_MESSAGE, task.getTaskEntryDescription());
         } catch (NullPointerException npe) {
             message = getUsageMessage();

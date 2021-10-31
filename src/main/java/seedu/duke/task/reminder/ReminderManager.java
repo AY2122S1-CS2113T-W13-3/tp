@@ -8,7 +8,6 @@ import seedu.duke.exception.MissingUserTimeException;
 import seedu.duke.exception.MissingUserMessageException;
 import seedu.duke.exception.MissingReminderFieldException;
 import seedu.duke.local.DataManager;
-import seedu.duke.task.Task;
 import seedu.duke.task.taskmanager.TaskManager;
 
 import java.time.LocalDateTime;
@@ -65,7 +64,6 @@ public class ReminderManager {
                 long userTime = Long.parseLong(commandArguments.get(ReminderFlag.TIME_AHEAD));
                 try {
                     customizeReminderTime(userTime, index - 1, taskManager);
-                    DataManager.updateReminderTime(index - 1, userTime);
                     outMessage += "The time for reminding before task is updated to " + userTime + " minutes.";
                 } catch (InvalidTaskIndexException itie) {
                     return itie.getMessage();
@@ -81,7 +79,6 @@ public class ReminderManager {
                 String message = commandArguments.get(ReminderFlag.REMINDER_MESSAGE);
                 try {
                     customizeReminderMessage(message, index - 1, taskManager);
-                    DataManager.updateReminderMessage(index - 1, message);
                     outMessage += "The reminder message is updated to " + message;
                 } catch (InvalidTaskIndexException itie) {
                     return itie.getMessage();

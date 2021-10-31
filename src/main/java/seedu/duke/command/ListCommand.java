@@ -31,6 +31,7 @@ public class ListCommand extends Command {
         boolean containsMainArgument = commandArguments.containsKey(MAIN_ARGUMENT);
 
         try {
+            taskManager.refreshListDates();
             if (!containsMainArgument || (containsMainArgument && commandArguments.get(MAIN_ARGUMENT).equals(""))) {
                 message = taskManager.listTasklistWithFilter(commandArguments);
             } else if (containsMainArgument) {

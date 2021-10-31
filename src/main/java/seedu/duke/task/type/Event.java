@@ -12,7 +12,6 @@ import seedu.duke.task.RecurrenceEnum;
 import seedu.duke.task.Task;
 import seedu.duke.task.TypeEnum;
 import seedu.duke.task.reminder.Reminder;
-import seedu.duke.task.reminder.ReminderInformation;
 
 public class Event extends Task {
 
@@ -65,7 +64,7 @@ public class Event extends Task {
             assert startDate.isBefore(endDate) : START_DATE_BEFORE_END_DATE_ASSERTION;
         }
         this.startDate = startDate;
-        reminder = new Reminder(startDate);
+        setReminder(new Reminder(startDate));
     }
 
     public LocalDateTime getEndDate() {
@@ -81,33 +80,10 @@ public class Event extends Task {
     }
 
     @Override
-    public boolean needReminder() {
-        return (reminder != null);
-    }
-
-    @Override
-    public void updateReminderMessage(String message) {
-        reminder.setMessage(message);
-    }
-
-    @Override
-    public void updateReminderTime(long reminderTime) {
-        reminder.setUserTime(reminderTime);
-    }
-
-    public ReminderInformation getReminderInformation() {
-        return reminder.getInformation();
-    }
-
-    @Override
     public String getTaskEntryDescription() {
         return EVENT_ICON + " " + super.getTaskEntryDescription()
             + String.format(DEADLINE_DATE_DESCRIPTION_REGEX,
             DateParser.dateToString(getStartDate()), DateParser.dateToString(getEndDate()));
-    }
-
-    public String getReminder(LocalDateTime now) {
-        return reminder.getRecurrenceMessage(now, getTaskEntryDescription(), getRecurrence());
     }
 
     @Override
@@ -128,5 +104,18 @@ public class Event extends Task {
         }
         setStartDate(startDate);
         setEndDate(endDate);
+    }
+
+    @Override
+    public void refreshDate() {
+        LocalDateTime newStartDate = getRecurrence().getNextRecurredDate(getStartDate());
+        LocalDateTime newEndDate = getRecurrence().getNextRecurredDate(getEndDate());
+        setEndDate(newEndDate);
+        setStartDate(newStartDate);
+    }
+
+    @Override
+    public LocalDateTime getListDate() {
+        return getStartDate();
     }
 }
